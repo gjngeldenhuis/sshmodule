@@ -1,0 +1,128 @@
+#	Managed by puppet
+
+# This is the sshd server system-wide configuration file.  See
+# sshd_config(5) for more information.
+
+Port <%= scope['::ssh::port'] %>
+AddressFamily <%= scope['::ssh::addressfamily'] %>
+<% listenaddress_local = scope['::ssh::listenaddress']  -%>
+<% listenaddress_local.each do |val| -%>
+ListenAddress <%= val %>
+<% end -%>
+#ListenAddress ::   not yet ipv6 supported in puppet module
+
+Protocol <%= scope['::ssh::protocol'] %>
+
+# You can have multiple host keys. Possibly usefull to manage with puppet?
+# Maybe support generation of more host keys. Host keys gets auto generated
+# when service start. How would you manage with puppet and/or ensure that 
+# puppet created the host keys with your params not with the default params?
+#
+# HostKey for protocol version 1
+#HostKey /etc/ssh/ssh_host_key
+# HostKeys for protocol version 2
+#HostKey /etc/ssh/ssh_host_rsa_key
+#HostKey /etc/ssh/ssh_host_dsa_key
+
+# Lifetime and size of ephemeral version 1 server key
+#KeyRegenerationInterval 1h
+ServerKeyBits <%= scope['::ssh::serverkeybits'] %>
+
+# Logging
+# obsoletes QuietMode and FascistLogging
+SyslogFacility <%= scope['::ssh::syslogfacility'] %>
+LogLevel <%= scope['::ssh::sshloglevel'] %>
+
+# Authentication:
+
+LoginGraceTime <%= scope['::ssh::logingracetime'] %> 
+PermitRootLogin <%= scope['::ssh::permitrootlogin'] %>
+#StrictModes yes
+MaxAuthTries <%= scope['::ssh::maxauthtries'] %>
+MaxSessions <%= scope['::ssh::maxsessions'] %>
+
+#RSAAuthentication yes
+#PubkeyAuthentication yes
+#AuthorizedKeysFile	.ssh/authorized_keys
+#AuthorizedKeysCommand none
+#AuthorizedKeysCommandRunAs nobody
+
+# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
+RhostsRSAAuthentication <%= scope['::ssh::rhostsrsaauthentication'] %>
+# similar for protocol version 2
+HostbasedAuthentication <%= scope['::ssh::hostbasedauthentication'] %>
+# Change to yes if you don't trust ~/.ssh/known_hosts for
+# RhostsRSAAuthentication and HostbasedAuthentication
+IgnoreUserKnownHosts <%= scope['::ssh::ignoreuserknownhosts'] %>
+# Don't read the user's ~/.rhosts and ~/.shosts files
+IgnoreRhosts <%= scope['::ssh::ignorerhosts'] %>
+
+# To disable tunneled clear text passwords, change to no here!
+PasswordAuthentication <%= scope['::ssh::passwordauthentication'] %>
+PermitEmptyPasswords <%= scope['::ssh::permitemptypasswords'] %>
+PasswordAuthentication <%= scope['::ssh::passwordauthentication'] %>
+
+# Change to no to disable s/key passwords
+ChallengeResponseAuthentication <%= scope['::ssh::challengeresponseauthentication'] %>
+
+# Kerberos options
+KerberosAuthentication <%= scope['::ssh::kerberosauthentication'] %>
+KerberosOrLocalPasswd <%= scope['::ssh::kerberosorlocalpasswd'] %>
+KerberosTicketCleanup <%= scope['::ssh::kerberosticketcleanup'] %>
+
+# unsupported token, why is it  in the original config file?
+KerberosGetAFSToken <%= scope['::ssh::kerberosgetafstoken'] %>
+KerberosUseKuserok <%= scope['::ssh::kerberosusekuserok'] %>
+
+# GSSAPI options
+GSSAPIAuthentication <%= scope['::ssh::gssapiauthentication'] %> 
+GSSAPICleanupCredentials <%= scope['::ssh::gssapicleanupcredentials'] %>
+GSSAPIStrictAcceptorCheck <%= scope['::ssh::gssapistrictacceptorcheck'] %>
+GSSAPIKeyExchange <%= scope['::ssh::gssapikeyexchange'] %>
+
+UsePAM <%= scope['usepam'] %>
+
+# Accept locale-related environment variables
+AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+AcceptEnv XMODIFIERS
+
+AllowAgentForwarding <%= scope['::ssh::allowagentforwarding'] %>
+AllowTcpForwarding <%= scope['::ssh::allowtcpforwarding'] %>
+GatewayPorts <%= scope['::ssh::gatewayports'] %>
+X11Forwarding <%= scope['::ssh::x11forwarding'] %>
+
+X11DisplayOffset <%= scope['::ssh::x11displayoffset'] %>
+X11UseLocalhost <%= scope['::ssh::x11uselocalhost'] %>
+PrintMotd <%= scope['::ssh::printmotd'] %>
+PrintLastLog <%= scope['::ssh::printlastlog'] %>
+TCPKeepAlive <%= scope['::ssh::tcpkeepalive'] %>
+UseLogin  <%= scope['::ssh::uselogin'] %>
+UsePrivilegeSeparation <%= scope['::ssh::useprivilegeseparation'] %>
+PermitUserEnvironment <%= scope['::ssh::permituserenvironment'] %>
+
+Compression <%= scope['::ssh::compression'] %>
+#ClientAliveInterval 0
+#ClientAliveCountMax 3
+#ShowPatchLevel no
+UseDNS <%= scope['::ssh::usedns'] %> 
+#PidFile /var/run/sshd.pid
+#MaxStartups 10
+#PermitTunnel no
+#ChrootDirectory none
+
+# no default banner path
+#Banner none
+
+# override default of no subsystems
+# Need more examples of how to use Subsystem before this can be handled in the ssh class.
+Subsystem	sftp	/usr/libexec/openssh/sftp-server
+
+# Override settings on a per |User|Group|Host|Address| if specified.
+<% matchblock.keys.each do |match| -%>
+Match <%= match %>
+<%   matchblock[match].keys.each do |param| -%>
+<%=   "  #{param}=#{matchblock[match][param]}" %>
+<%   end %>
+<% end -%>
