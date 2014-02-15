@@ -118,11 +118,3 @@ UseDNS <%= scope['::ssh::usedns'] %>
 # override default of no subsystems
 # Need more examples of how to use Subsystem before this can be handled in the ssh class.
 Subsystem	sftp	/usr/libexec/openssh/sftp-server
-
-# Override settings on a per |User|Group|Host|Address| if specified.
-<% matchblock.keys.each do |match| -%>
-Match <%= match %>
-<%   matchblock[match].keys.each do |param| -%>
-<%=   "  #{param}=#{matchblock[match][param]}" %>
-<%   end %>
-<% end -%>

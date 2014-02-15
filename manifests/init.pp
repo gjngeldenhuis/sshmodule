@@ -83,6 +83,7 @@ class ssh (
   $uselogin = 'no',
   $useprivilegeseparation = 'yes',
   $permituserenvironment = 'no',
+  $permitopen = 'any',
 
 ){
 
@@ -152,12 +153,19 @@ class ssh (
     #    subscribe => File['/etc/ssh/sshd_config'],
   }
 
-  file { '/etc/ssh/sshd_config':
-    ensure  => present,
+  $sshd_config = '/etc/ssh/sshd_config'
+
+  concat{ $sshd_config:
     owner   => 'root',
     group   => 'root',
     mode    => '0600',
+  }
+
+
+  concat::fragment { 'main':
+    target  => $sshd_config,
     content => template('ssh/sshd_config.erb'),
+    order   => '00'
   }
 
 }
