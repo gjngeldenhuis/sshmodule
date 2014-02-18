@@ -1,0 +1,4 @@
+sshmodule
+=========
+
+Puppet ssh module
