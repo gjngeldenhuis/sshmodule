@@ -86,6 +86,7 @@ class ssh (
   $permitopen = 'any',
 
 ){
+  include ssh::params
 
   # TODO
   # 1. Write generic data validator or at least generic for yes/no

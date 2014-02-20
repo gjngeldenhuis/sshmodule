@@ -1,0 +1,56 @@
+<%# The formatting allows removes empty lines while ensuring a line break after each statement %>
+Match <%= @match %>
+<% if @allowagentforwarding != 'UNDEF' %>  AllowAgentForwarding <%= @allowagentforwarding %>
+  <% end -%>
+<% if @allowagetcpforwarding != 'UNDEF' %>  AllowTCPForwarding <%= @allowtcpforwarding %>
+  <% end -%>
+<% if @banner != 'UNDEF' %>  Banner <%= @banner  %>
+  <% end -%>
+<% if @chrootdirectory != 'UNDEF' %>  ChrootDirectory <%= @ChrootDirectory %>
+  <% end -%>
+<% if @forcecommand != 'UNDEF' %>  ForceCommand <%= @forcecommand %>
+  <% end -%>
+<% if @gatewayports != 'UNDEF' %>  GatewayPorts <%= @gatewayports %>
+  <% end -%>
+<% if @gssapiauthentication != 'UNDEF' %>  GSSAPIAuthentication <%= @gssapiauthentication %>
+  <% end -%>
+<% if @hostbasedauthentication != 'UNDEF' %>  HostBasedAuthentication <%= @hostbasedauthentication %>
+  <% end -%>
+<% if @kbdinteractiveauthentication != 'UNDEF' %>  KbdInteractiveAuthentication <%= @kbdinteractiveauthentication %>
+  <% end -%>
+<% if @kerberosauthentication != 'UNDEF' %>  KerberosAuthentication <%= @kerberosauthentication %>
+  <% end -%>
+<% if @kerberosusekuserok != 'UNDEF' %>  KerberosUseKuserok <%= @kerberosusekuserok %>
+  <% end -%>
+<% if @maxauthtries != 'UNDEF' %>  MaxAuthTries <%= @maxauthtries %>
+  <% end -%>
+<% if @maxsessions != 'UNDEF' %>  MaxSessions <%= @maxsessions %>
+  <% end -%>
+<% if @pubkeyauthentication != 'UNDEF' %>  PubkeyAuthentication <%= @pubkeyauthentication %>
+  <% end -%>
+<% if @authorizedkeyscommand != 'UNDEF' %>  AuthorizedKeysCommand <%= @authorizedkeyscommand %>
+  <% end -%>
+<% if @authorizedkeyscommandrunas != 'UNDEF' %>  AuthorizedKeysCommandRunAs <%= @authorizedkeyscommandrunas %>
+  <% end -%>
+<% if @passwordauthentication != 'UNDEF' %>  PasswordAuthentication <%= @passwordauthentication %>
+  <% end -%>
+<% if @permitemptypasswords != 'UNDEF' %>  PermitEmptyPasswords <%= @permitemptypasswords %>
+  <% end -%>
+<% if @permitopen != 'UNDEF' %>  PermitOpen <%= @permitopen %>
+  <% end -%>
+<% if @permitrootlogin != 'UNDEF' %>  PermitRootLogin <%= @permitrootlogin %>
+  <% end -%>
+<% if @requiredauthentications1 != 'UNDEF' %>  RequiredAuthentications1 <%= @requiredauthentications1 %>
+  <% end -%>
+<% if @requiredauthentications2 != 'UNDEF' %>  RequiredAuthentications2 <%= @requiredauthentications2 %>
+  <% end -%>
+<% if @rhostsrsaauthentication != 'UNDEF' %>  RhostsRSAAuthentication <%= @rhostsrsaauthentication %>
+  <% end -%>
+<% if @rsaauthentication != 'UNDEF' %>  RSAAuthentication <%= @rsaauthentication %>
+  <% end -%>
+<% if @x11displayoffset != 'UNDEF' %>  X11DisplayOffset <%= @x11displayoffset %>
+  <% end -%>
+<% if @x11forwarding != 'UNDEF' %>  X11Forwarding <%= @x11forwarding %>
+  <% end -%>
+<% if @x11uselocalhost != 'UNDEF' %>  X11UseLocalHost <%= @x11uselocalhost %>
+  <% end -%>
