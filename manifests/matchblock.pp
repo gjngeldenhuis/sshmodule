@@ -30,12 +30,12 @@ define ssh::matchblock (
 )
 {
 
-  if ! defined(Class['ssh']) {
-    fail('You must include the ssh base class before using any matchblock defined resources')
+  if ! defined(Class['ssh::server']) {
+    fail('You must include the ssh::server base class before using any matchblock defined resources')
   }
 
-  concat::fragment{ $name:
-    target  => $::ssh::sshd_config,
+  concat::fragment{ "sshd_matchblock_${name}":
+    target  => $::ssh::server::sshd_config,
     content => template('ssh/sshd_matchblock.erb'),
     order   => '10',
   }

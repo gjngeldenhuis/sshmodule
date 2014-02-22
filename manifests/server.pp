@@ -41,7 +41,7 @@
 class ssh::server (
   $port                            = $::ssh::params::port,
   $addressfamily                   = $::ssh::params::addressfamily,
-  $listenaddress, 
+  $listenaddress                   = $::ssh::params::listenaddress,
   $protocol                        = $::ssh::params::protocol,
   $syslogfacility                  = $::ssh::params::syslogfacility,
   $permitrootlogin                 = $::ssh::params::permitrootlogin,
@@ -91,21 +91,14 @@ class ssh::server (
   # 2. Find a way to improve matchblock or at least do data checking.
 
   # Data validation
-  if ! ("${addressfamily}" in ['inet','inet6','any']) {
-    fail("${module_name}: Invalid AddressFamily Parameter")
-  }
+  if $addressfamily { validate_re($addressfamily, '(inet|inet6|any)') }
+  if $syslogfacility { validate_re($syslogfacility, '(DAEMON|USER|AUTH|AUTHPRIV|LOCAL0|LOCAL1|LOCAL2|LOCAL3|LOCAL4|LOCAL5|LOCAL6|LOCAL7)') }
+  if $permitrootlogin { validate_re($permitrootlogin, '(yes|no|without-password|forced-commands-only)') }
+  if $compression { validate_re($compression, '(yes|no|delayed)') }
+  if $maxsessions { validate_number2($maxsessions) }
 
-  if ! ($syslogfacility in ['DAEMON','USER','AUTH','AUTHPRIV','LOCAL0','LOCAL1','LOCAL2','LOCAL3','LOCAL4','LOCAL5','LOCAL6','LOCAL7']) {
-    fail("${module_name}: Invalid SyslogFacility Parameter")
-  }
-
-  if ! ($permitrootlogin in ['yes','no','without-password','forced-commands-only']) {
-    fail("${module_name}: Invalid PermitRootLogin Parameter")
-  }
-
-  if ! ($compression in ['yes','no','delayed']) {
-    fail("${module_name}: Invalid Compression Parameter")
-  }
+  #  if $maxauthtries { is_numeric($maxauthtries) }
+  #  if $maxsessions { is_numeric($maxsessions) }
 
   #rhostsrsaauthentication  only valid for protocol 1, provide warning message.
   #hostbasedauthentication  only valid for protocol 2, provide warning message.
