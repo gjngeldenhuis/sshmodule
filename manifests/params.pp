@@ -52,4 +52,18 @@ class ssh::params {
   $rsaauthentication               = undef # 'yes'
   $banner                          = undef # Empty string by default
   $chrootdirectory                 = undef # Not set by default    TODO: directory must be owned only by root, build in check
+
+  case $::osfamily {
+    'RedHat': {
+      $sshd_pkg = 'openssh-server'
+      $ssh_pkg = 'openssh-clients'
+      $sshd_cfg = '/etc/ssh/sshd_config'
+      $ssh_cfg = '/etc/ssh/ssh_config'
+      $sshd_svc = 'sshd'
+    }
+
+    default: {
+      fail("OSFamily ${::osfamily} not supported")
+    }
+  }
 }

@@ -35,7 +35,7 @@ define ssh::matchblock (
   }
 
   concat::fragment{ "sshd_matchblock_${name}":
-    target  => $::ssh::server::sshd_config,
+    target  => $::ssh::params::sshd_cfg,
     content => template('ssh/sshd_matchblock.erb'),
     order   => '10',
   }

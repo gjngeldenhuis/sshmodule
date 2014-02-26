@@ -86,38 +86,63 @@ class ssh::server (
 
 ) inherits ssh::params {
 
-  # TODO
-  # 1. Write generic data validator or at least generic for yes/no
-  # 2. Find a way to improve matchblock or at least do data checking.
-
-  # Data validation
+# Data validation
   if $addressfamily { validate_re($addressfamily, '(inet|inet6|any)') }
   if $syslogfacility { validate_re($syslogfacility, '(DAEMON|USER|AUTH|AUTHPRIV|LOCAL0|LOCAL1|LOCAL2|LOCAL3|LOCAL4|LOCAL5|LOCAL6|LOCAL7)') }
   if $permitrootlogin { validate_re($permitrootlogin, '(yes|no|without-password|forced-commands-only)') }
   if $compression { validate_re($compression, '(yes|no|delayed)') }
-  if $maxsessions { validate_number2($maxsessions) }
-
-  #  if $maxauthtries { is_numeric($maxauthtries) }
-  #  if $maxsessions { is_numeric($maxsessions) }
-
-  #rhostsrsaauthentication  only valid for protocol 1, provide warning message.
-  #hostbasedauthentication  only valid for protocol 2, provide warning message.
-
+  if $maxsessions { validate_number($maxsessions) }
+  if $maxauthtries { validate_number($maxuauthtries) }
+  if $allowagentforwarding { validate_re($allowagentforwarding, '(yes|no)') }
+  if $x11forwarding { validate_re($x11forwarding, '(yes|no)') }
+  if $allowtcpforwarding { validate_re($allowtcpforwarding, '(yes|no)') }
+  if $usedns { validate_re($usedns, '(yes|no)') }
+#  $compression                     = undef # 'delayed'
+#  $usepam { validate_re($usepam, '(yes|no)'}
+#  $serverkeybits                   = undef # '1024' only protocol 1
+#  $sshloglevel                     = undef # 'INFO'
+#  $logingracetime                  = undef # '2m'
+#  if $rhostsrsaauthentication { validate_re($rhostsrsaauthentication, '(yes|no)') }# only protocol 1
+#  if $hostbasedauthentication { validate_re($hostbasedauthentication, '(yes|no)') }# only protocol 1
+  if $ignoreuserknownhosts { validate_re($ignoreuserknownhosts, '(yes|no)') }
+  if $ignorerhosts { validate_re($ignorerhosts, '(yes|no)') }
+  if $passwordauthentication { validate_re($passwordauthentication, '(yes|no)') }
+  if $permitemptypasswords { validate_re($permitemptypasswords, '(yes|no)') }
+  if $challengeresponseauthentication { validate_re($challengeresponseauthentication, '(yes|no)') }
+  if $kerberosauthentication { validate_re($kerberosauthentication, '(yes|no)') }
+  if $kerberosorlocalpasswd { validate_re($kerberosorlocalpasswd, '(yes|no)') }
+  if $kerberosticketcleanup { validate_re($kerberosticketcleanup, '(yes|no)') }
+  if $kerberosgetafstoken { validate_re($kerberosgetafstoken, '(yes|no)') }
+  if $kerberosusekuserok { validate_re($kerberosusekuserok, '(yes|no)') }
+  if $gssapiauthentication { validate_re($gssapiauthentication, '(yes|no)') }
+  if $gssapicleanupcredentials { validate_re($gssapicleanupcredentials, '(yes|no)') }
+  if $gssapistrictacceptorcheck { validate_re($gssapistrictacceptorcheck, '(yes|no)') }
+  if $gssapikeyexchange { validate_re($gssapikeyexchange, '(yes|no)') }
+  if $gatewayports { validate_re($gatewayports, '(yes|no)') }
+  if $x11displayoffset { validate_number($x11displayoffset) }
+  if $x11uselocalhost { validate_re($x11uselocalhost, '(yes|no)') }
+  if $printmotd { validate_re($printmotd, '(yes|no)') }
+  if $printlastlog { validate_re($printlastlog, '(yes|no)') }
+  if $tcpkeepalive { validate_re($tcpkeepalive, '(yes|no)') }
+  if $uselogin { validate_re($uselogin, '(yes|no)') }
+  if $useprivilegeseparation { validate_re($useprivilegeseparation, '(yes|no)') }
+  if $permituserenvironment { validate_re($permituserenvironment, '(yes|no)') }
+  if $kbdinteractiveauthentication { validate_re($kbdinteractiveauthentication, '(yes|no)') }
+  if $pubkeyauthentication { validate_re($pubkeyauthentication, '(yes|no)') }
 
   # do data validation for ListenAddress, it can take multiple arguments in the form of x.x.x.x or x.x.x.x:y or ipv6 compatible.
 
-  package { 'openssh':
-    ensure    => installed,
+  package { $::ssh::params::sshd_pkg:
+    ensure => installed,
   }
 
-  service { 'sshd':
-    ensure => running,
-    #    subscribe => File['/etc/ssh/sshd_config'],
+  service { $::ssh::params::sshd_svc:
+    ensure    => running,
+    enable    => true,
+    subscribe => File[$::ssh::params::sshd_cfg],
   }
 
-  $sshd_config = '/etc/ssh/sshd_config'
-
-  concat{ $sshd_config:
+  concat{ $::ssh::params::sshd_cfg:
     owner   => 'root',
     group   => 'root',
     mode    => '0600',
@@ -125,7 +150,7 @@ class ssh::server (
 
 
   concat::fragment { 'main':
-    target  => $sshd_config,
+    target  => $::ssh::params::sshd_cfg,
     content => template('ssh/sshd_config.erb'),
     order   => '00'
   }

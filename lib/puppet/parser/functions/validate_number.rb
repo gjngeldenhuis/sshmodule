@@ -9,7 +9,7 @@ module Puppet::Parser::Functions
     value = args[0]
 
     if ! (value == value.to_f.to_s or value == value.to_i.to_s) then
-      raise(Puppet::ParserError, "The #{args[0].inspect} is not numeric")
+      raise(Puppet::ParseError, "The value #{args[0].inspect} is not numeric")
     end
 
   end
